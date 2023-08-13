@@ -1,0 +1,45 @@
+<link rel="stylesheet" href= "/css/formulario.css">
+
+<div class="formulario">
+    <h1 class="h1">Login</h1>
+    <form action="" id="formLogin">
+        <div class="mb-3">
+            <label class="form-label" for="input_email" htmlFor="email" >Email</label>
+            <input class='formImput' type="text" name='email' id="input_email" >
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="input_password" htmlFor="password">Password</label>
+            <input class='formImput' type="password" name='password' id="input_password">
+        </div>
+        <Button type='submit' variant="outline-dark" class="btnConfirm">Login</Button>
+    </form>
+    <br/>
+    <div>
+        <p>Olvidé mi contraseña</p>
+        <button class="btnOk" id="recoverPassword">Restablecer contraseña</button>
+    </div>
+    <div>
+      <p>¿Aún no tienes un usuario?</p>
+      <button class="btnOk" id="redirigirRegistro">Registrarme</button>
+    </div>
+    <a href="/api/sessions/github">
+      <button class="btnOk">Entrar con Github</button>
+    </a>
+</div>
+
+{{!-- <h1 class="h1">Login</h1>
+
+<form action="" id="formLogin">
+  <div>
+    <label for="input_email">Email</label>
+    <input type="text" name="email" placeholder="email" id="input_email">
+  </div>
+  <div>
+    <label for="input_password">Password</label>
+    <input type="password" name="password" placeholder="Password" id="input_password">
+  </div>
+  <button type="submit">Login</button>
+</form> --}}
+
+
+<script src="/js/login.js"></script>
