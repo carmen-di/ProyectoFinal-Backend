@@ -13,7 +13,8 @@ const usersSchema = new mongoose.Schema({
     cart: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'carts',
-    }
+    },
+    last_connection: { type: Date, default: Date.now },
 }, {versionKey: false})
 
 export const usersModel = mongoose.model(usersCollection, usersSchema)

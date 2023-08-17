@@ -1,4 +1,5 @@
 const formMailing = document.getElementById('formMailing')
+const redirigirLoginBtn = document.querySelector("#redirigirLogin")
 
 if (formMailing instanceof HTMLFormElement) {
     formMailing.addEventListener("submit", async event => {
@@ -25,3 +26,9 @@ if (formMailing instanceof HTMLFormElement) {
         }
     })
 }
+
+function irLogin() {
+    window.location.href = '/login'
+}
+
+redirigirLoginBtn.addEventListener("click", irLogin)

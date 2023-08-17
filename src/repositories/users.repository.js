@@ -18,9 +18,25 @@ class UsersRepository extends GenericRepository {
         }
     }
 
+    async getUsers(){
+        try {
+            return await this.dao.getUsers();
+        } catch (error) {
+            throw new Error(error)
+        }
+    }
+    
     async updateUser(userId, updateFields) {
         return await this.dao.updateOne(userId, updateFields)
     }
 
+    async deleteUser(userId) {
+        try {
+        return await this.dao.deleteUser(userId)
+        } catch (error) {
+            throw new Error (error)
+        }
+    }
 }
+
 export const usersRepository = new UsersRepository(usersDaoMongoose)

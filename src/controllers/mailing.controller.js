@@ -21,10 +21,9 @@ export const sendResetPasswordEmail = async (req, res) => {
     let result = await clienteNodemailer.sendMail({
         from: "<cdomingueziribe@gmail.com>",
         to: email,
-        subject: "Correo",
+        subject: "Reestablecimiento de contraseña",
         text: "Hola, esto es una prueba de envio de correo",
-        html: `<div><h1>Hola, esto es una prueba de envio de correo</h1>
-        <a href="http://localhost:8080/forgot/${token}">Click aquí para resetear tu contraseña</a>
+        html: `<div> <a href="http://localhost:8080/forgot/${token}">Click aquí para resetear tu contraseña</a>
         </div>`,
     })
     console.log(result)
@@ -39,7 +38,6 @@ export const resetPasswordController = async (req, res) => {
     const { email, password } = req.body;
 
     let newPassword = encriptar(password)
-    console.log(newPassword)
 
     try {
         if (!email || !password ) {
@@ -47,17 +45,19 @@ export const resetPasswordController = async (req, res) => {
         }
 
         const user = await usersRepository.getUserByEmail(email)
-        console.log(user)
 
         if (!user) {
             return res.status(404).json({ message: 'error', data: 'User not exist' })
         } else {
+            if (newPassword == user.password) {
+                return res.status(404).json({message: 'error', data: 'Cannot reset the password using the old password'})
+            }
             user.password = newPassword
             const result = await usersRepository.updateUserPassword(email, newPassword)
-            console.log(result)
-            return result
+        
             if (user) {
-                return res.status(200).json({ message: 'success', data: 'Password Updated' })
+                res.render("login", {title: "Login"})
+                return result
             }
         }
     } catch (error) {
@@ -66,7 +66,6 @@ export const resetPasswordController = async (req, res) => {
 };
 
 export const resetPasswordEmailController = async (req, res) => {
-
     const { key } = req.params;
     const { password, email } = req.body;
     let newPassword = encriptar(password)
@@ -75,7 +74,7 @@ export const resetPasswordEmailController = async (req, res) => {
         console.log(user)
         if (user) {
             const result = await usersRepository.updatePassword(email, newPassword)
-            console.log(result)
+            res.render("login", {title: "Login"})
             return result
         } else {
             res.send('ERROR')
@@ -86,30 +85,44 @@ export const resetPasswordEmailController = async (req, res) => {
 
 };
 
-export const resetPasswordCreateController = async (req, res) => {
-    const { key } = req.params;
+export const resetPasswordPageController = async (req, res) => {
+    res.render('forgot', { title: 'Reset Password', stylesheet: 'resetpassword' })
 
-    const token = crypto.randomBytes(20).toString('hex');
-
-    sendResetPasswordEmail({ key, token })
-
-
-    const resetPassword = new resetPasswordModel({
-        email: key,
-        token: token,
-        status: true,
-    })
-
-    const result = await resetPassword.save();
-
-    if (result) {
-        res.send(`Reset password for user ${result}`);
-    } else {
-        res.send('ERROR')
-    }
 }
 
-export const resetPasswordPageController = async (req, res) => {
-    res.render('resetpassword', { title: 'Reset Password', stylesheet: 'resetpassword' })
+export async function deleteUsers(req, res, next) {
+    try {
+        const now = new Date()
+    
+        const dias = 2
+        const diasEnMilisegundos = dias * 24 * 60 * 60 * 1000
+        const fechaLimite = now - diasEnMilisegundos
+    
+        const allUsers = await usersRepository.getUsers()
 
+        const inactiveUsers = allUsers.filter((user) => {
+            if (user.last_connection < fechaLimite) {
+                return user
+            }
+        })
+
+        inactiveUsers.forEach(async (inactiveUser) => {
+            const userId = inactiveUser.id
+
+            const emailOptions = {
+                from: "<cdomingueziribe@gmail.com>",
+                receiver: inactiveUser.email,
+                subject: "Cuenta eliminada por inactividad",
+                message: `Usuario "${inactiveUser?.email}", Su cuenta ha sido eliminada por inactividad`,
+            }
+            await clienteNodemailer.send(emailOptions)
+            await usersRepository.deleteUser(userId)
+        })
+        res.status(201).json({
+            allUsers: allUsers,
+            inactiveUsers: inactiveUsers,
+            })
+        } catch (error) {
+            throw new Error(error)
+        }
 }

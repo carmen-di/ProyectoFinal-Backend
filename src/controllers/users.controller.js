@@ -61,3 +61,13 @@ export const changeRole = async (req, res) => {
         res.status(500).json({ error: error.message })
     }
 }
+
+export async function deleteUserById(req,res,next) {
+    try {
+        const userId = req.params.uid
+        const deletedUser = await usersRepository.deleteUser(userId)
+        res.json(deletedUser)
+    } catch (error) {
+        throw new Error(error)
+    }
+}
