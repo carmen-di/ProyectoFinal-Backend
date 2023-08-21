@@ -5,7 +5,7 @@ class CartsRepository extends GenericRepository {
     constructor(dao) { super(dao) }
 
     async updateCart(cartId, cart) {
-        const result = await this.dao.updateById(cartId, cart)
+        const result = await this.dao.updateCart(cartId, cart)
         return result
     }
 
@@ -26,17 +26,22 @@ class CartsRepository extends GenericRepository {
     }
     
     async deleteCartProduct(productId, cartId) {
-        const result = await this.dao.deleteProdFromCart(productId, cartId)
+        const result = await this.dao.deleteCartProduct(productId, cartId)
         return result
     }
 
     async deleteAllProducts(cartId) {
-        const result = await this.dao.deleteAll(cartId)
+        const result = await this.dao.deleteAllProducts(cartId)
         return result
     }
 
-    async updateProduct(id, product, quantity) {
-        const result = await this.dao.updateProd(cartId, productId, quantity)
+    async updateProduct(cartId, product, quantity) {
+        const result = await this.dao.updateProduct(cartId, product, quantity)
+        return result
+    }
+
+    async deleteCart(cartId) {
+        const result = this.dao.deleteCart(cartId);
         return result
     }
 }

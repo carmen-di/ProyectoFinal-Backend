@@ -35,6 +35,20 @@ export async function postUsuarios(req, res) {
     })
 }
 
+export async function getUsuarios(req, res, next) {
+    try {
+        const users = await usersRepository.getAllUsers()
+        const datosUsers = users.map(user => ({
+            name: user.name,
+            email: user.email,
+            role: user.role
+        }))
+        res.json(datosUsers)
+    } catch (error) {
+        throw new Error(error)
+    }
+} 
+
 export const changeRole = async (req, res) => {
     const uid = req.params.uid;
 

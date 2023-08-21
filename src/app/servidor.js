@@ -2,7 +2,6 @@ import express from 'express'
 import { PORT } from '../config/servidor.config.js'
 import { engine } from 'express-handlebars'
 import { apiRouter } from '../routers/api.router.js'
-import { chatRouter } from '../routers/chat.router.js'
 import { viewsRouter } from '../routers/views.router.js'
 import { conectar } from '../database/mongoose.js'
 import { Server } from 'socket.io'
@@ -60,7 +59,6 @@ app.use(passportInitialize, passportSession)
 app.use(addLogger)
 
 app.use('/api', apiRouter)
-app.use('/chat', chatRouter)
 app.use('/loggerTest', loggerRouter)
 app.use("/recover", recoverRouter)
 app.use('/', viewsRouter)

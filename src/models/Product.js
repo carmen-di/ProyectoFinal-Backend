@@ -10,8 +10,9 @@ export class Product {
     #stock
     #category
     #status
+    #owner
 
-    constructor({ title, description, price, thumbnail, code = newId(), stock, category }) {
+    constructor({ title, description, price, thumbnail, code = newId(), stock, category, owner = 'admin' }) {
         obligatorio(title, 'title')
         this.#title = validarCadena(title, "title")
 
@@ -31,6 +32,7 @@ export class Product {
 
         this.#code = code
         this.#thumbnail = thumbnail
+        this.#owner = owner
     }
 
     get title() { return this.#title }
@@ -48,6 +50,7 @@ export class Product {
             code: this.#code,
             stock: Number(this.#stock),
             category: this.#category,
+            owner: this.#owner
         }
     }
 }

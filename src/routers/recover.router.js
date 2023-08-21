@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { forgotPageController, resetPasswordController, resetPasswordEmailController, resetPasswordPageController, sendResetPasswordEmail } from "../controllers/mailing.controller.js"
+import { forgotPageController, resetPasswordController, resetPasswordEmailController, resetPasswordPageController, sendResetPasswordEmail, sendProductDeletedEmail } from "../controllers/mailing.controller.js"
 import express from "express"
 
 export const recoverRouter = Router()
@@ -14,3 +14,5 @@ recoverRouter.post('/:key', resetPasswordEmailController)
 recoverRouter.get('/:key', resetPasswordPageController)
 
 recoverRouter.post('/', sendResetPasswordEmail)
+
+recoverRouter.post('/', sendProductDeletedEmail)

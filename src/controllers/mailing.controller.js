@@ -126,3 +126,24 @@ export async function deleteUsers(req, res, next) {
             throw new Error(error)
         }
 }
+
+export async function sendProductDeletedEmail(userEmail) { 
+    try {
+        const emailData = await clienteNodemailer.sendMail({
+            from: "<cdomingueziribe@gmail.com>",
+            to: userEmail,
+            subject: "Producto eliminado",
+            text: "El producto seleccionado ha sido eliminado.",
+        });
+        return emailData;
+    } catch (error) {
+        throw new Error(`Error sending product deleted email: ${error.message}`);
+    }
+}
+
+
+
+
+
+
+

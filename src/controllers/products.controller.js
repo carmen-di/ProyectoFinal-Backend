@@ -1,5 +1,6 @@
 import { Product } from "../models/Product.js";
 import { productosRepository } from "../repositories/products.repository.js";
+import { sendProductDeletedEmail } from "./mailing.controller.js";
 
 export async function handleGet(req, res, next) {
     const { limit, page, category, status, sort } = req.query
@@ -69,10 +70,21 @@ export async function handlePut(req, res, next) {
 
 export async function handleDelete(req, res, next) {
     try {
-        const borrada = await productosRepository.borrarSegunId(req.params.pid)
-        res.json(borrada)
+        const prodBorrar = await productosRepository.obtenerSegunId(req.params.pid)
+        if (
+            req.query.owner !== "premium" &&
+            prodBorrar.owner !== req.query.owner
+        ) {
+            throw new Error("You don't have permission to delete this product");
+        }
+        const isPremiumUser = req.query.owner === "premium"
+        await productosRepository.deleteOne(req.params.pid)
+        if (isPremiumUser) {
+            await sendProductDeletedEmail(prodBorrar.ownerEmail);
+        }
+        res.status(201).send({ message: "Product deleted successfully"});
     } catch (error) {
-        req.logger.error(`error deleting products: ${error.message}`)
-        res.status(500).send(error.message)
+        req.logger.error(`error deleting products: ${error.message}`);
+        res.status(500).send(error.message);
     }
 }

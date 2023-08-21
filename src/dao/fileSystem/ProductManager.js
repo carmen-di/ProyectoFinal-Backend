@@ -1,7 +1,7 @@
 import { fileManager } from '../fileSystem/fileManager.js'
 
 export class Product {
-    constructor({title, description, price, id, thumbnail, code, stock, category}) {
+    constructor({title, description, price, id, thumbnail, code, stock, category, owner}) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -10,6 +10,7 @@ export class Product {
         this.stock = stock;
         this.category = category;
         this.id = id;
+        this.owner = owner;
     }
 }
 
@@ -58,7 +59,8 @@ export class ProductManager extends fileManager {
                     thumbnail: thumbnail,
                     stock: stock,
                     code: code,
-                    category: category  
+                    category: category,
+                    owner: owner 
                 })
                 this.productos.push(newProduct)
                 await fs.promises.writeFile(this.#path, JSON.stringify(products, null, 2))

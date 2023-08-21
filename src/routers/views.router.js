@@ -40,16 +40,18 @@ viewsRouter.get('/carts/:cid', requireAuth, soloLogueadosView, async (req, res) 
     res.render('cart', {title: "Carrito"})
 })
 
-viewsRouter.get('/chat', requireAuth, soloLogueadosView, async (req, res) => {
-    try {
-        const mensajesDb = mongoose.connection.db.collection('messages')
-        const mensajes = await mensajesDb.find().toArray()
-        res.render('chat', {
-            mensajes: mensajes,
-            hayMensajes: mensajes.length > 0,
-            title: 'Chat'
-        })
-    } catch (error) {
-        next(error)
-    }
-})
+// viewsRouter.get('/chat', requireAuth, soloLogueadosView, async (req, res) => {
+//     try {
+//         const mensajesDb = mongoose.connection.db.collection('messages')
+//         const mensajes = await mensajesDb.find().toArray()
+//         res.render('chat', {
+//             mensajes: mensajes,
+//             hayMensajes: mensajes.length > 0,
+//             title: 'Chat'
+//         })
+//     } catch (error) {
+//         next(error)
+//     }
+// })
+
+

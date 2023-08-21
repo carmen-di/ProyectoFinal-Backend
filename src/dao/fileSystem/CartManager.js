@@ -1,5 +1,6 @@
 import { ProductManager } from "./ProductManager.js"
 import { fileManager } from '../fileSystem/fileManager.js'
+import { cartModel } from "../mongo/cart.dao.mongoose.js"
 
 export class Cart {
     constructor({ id, products }) {
@@ -80,6 +81,52 @@ export class CartManager extends fileManager {
         } catch (error) {
             return error.message
         }
+    
+    }
 
+    async deleteCartProduct(cid, pid) {
+        const cart = await this.getCartById(cid);
+        const product = cart.products
+        const cartEliminar = product.findIndex(prod => prod.id === pid);
+        if (cartEliminar === -1) {
+            console.log("Not found")
+        } 
+        const [eliminar] = product.splice(cartEliminar, 1)
+        await this.write()
+        return eliminar
+    }
+    
+    async updateCart(cid, updcart) {
+        const cart = await this.getCartById(cid);
+        const prodIndex = cart.products.findIndex(prod => prod.id === pid);
+        cart.products[prodIndex].quantity = newQuantity;
+        await this.write();
+    }
+    
+    async updProductInCart(cid, pid, upCantidad) {
+        const cart = await this.getCartById(cid);
+        const products = cart.products;
+        const productToUpdate = products.find((p) => p.product === pid);
+        if (!productToUpdate) {
+            throw new Error("Product not found in cart");
+        }
+        const newQuantity = parseInt(upCantidad.quantity, 10);
+        if (isNaN(newQuantity) || newQuantity < 0) {
+            throw new Error("Invalid quantity");
+        }
+        productToUpdate.quantity = newQuantity;
+        await cartModel.findByIdAndUpdate(cart._id, { products: products });
+    }
+
+    async delAllProductsInCart(cid) {
+        const cart = await this.getCartById(cid);
+        cart.products = [];
+        await this.write(); 
+        return cart;
+    }
+    
+    async deleteCart(cid) {
+        const cart = await this.getCartById(cid);
+        await cartModel.findByIdAndRemove(cart._id);
     }
 }

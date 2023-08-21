@@ -16,7 +16,8 @@ const productSchema = new Schema({
     owner: { type: String, enum: ["admin", "premium"], default: 'admin',},
     stock: { type: Number, required: true },
     category: { type: String, required: true },
-    thumbnail: { type: Array }
+    thumbnail: { type: Array },
+    owner: {type: String, required: false}
 }, { versionKey: false })
 
 productSchema.plugin(mongooseAggregatePaginate)
